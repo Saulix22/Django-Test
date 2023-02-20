@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block titulo %} Materiales {% endblock %}
+
+{% block contenido %}
+
+<h3 class="my-4">Materiales</h3>
+
+<div class="table-responsive bg-light p-4">
+    <table class="table table-primary">
+        <a name="" id="" class="btn btn-primary mb-2" href="{% url 'crear' %}" role="button">Agregar nuevo material</a>
+        <thead>
+            <tr>
+                <th scope="col">Imagenes</th>
+                <th scope="col">Id</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Área</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for material in materiales %}
+            <tr class="">
+                <td>
+                    <img src="{{ material.imagen.url }}" alt="" width="100"> 
+                </td>
+                <td scope="row">{{ material.id }}</td>
+                <td>{{ material.nombre }}</td>
+                <td>{{ material.area }}</td>
+                <td>{{ material.cantidad }}</td>
+                <td><a class="btn btn-warning" href="{% url 'editar' material.id %}" role="button">Modificar</a>   
+                    <a class="btn btn-danger" id="" href="{% url 'eliminar' material.id %}" role="button">Eliminar</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
