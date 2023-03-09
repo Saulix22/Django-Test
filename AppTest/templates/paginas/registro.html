@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block titulo %} Registro Modineer {% endblock %}
+
+{% block contenido %} 
+
+<form action="registro" method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <div>{{ error }}</div>
+
+    
+
+<button>
+    Registrarse
+</button>
+    
+    
+</form>
+
+
+
+{% endblock %}
