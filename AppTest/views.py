@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from .models import Material, Solicitud
-from .forms import MaterialForm
+from .forms import MaterialForm, SolicitudForm
 from django.db import IntegrityError
 
 # Create your views here.
@@ -52,10 +52,6 @@ def cerrarSesion(request):
     logout(request)
     return redirect('inicio')
 
-def solicitudes(request):
-    solicitudes = Solicitud.objects.all()
-    return render(request, 'solicitudes/inicio.html', {'solicitudes': solicitudes})
-
 def base(request):
     return render(request, 'base.html')
 
@@ -65,6 +61,7 @@ def materiales(request):
 
 def crear(request):
     formulario = MaterialForm(request.POST or None, request.FILES or None)
+    print(formulario)
     if formulario.is_valid():
         formulario.save()
         return redirect('materiales')
@@ -82,3 +79,27 @@ def eliminar(request, id):
     material = Material.objects.get(id=id)
     material.delete()
     return redirect('materiales')
+
+def solicitudes(request):
+    solicitudes = Solicitud.objects.all()
+    return render(request, 'solicitudes/inicio.html', {'solicitudes': solicitudes})
+
+def crearSolicitud(request):
+    
+    if request.method == 'GET':
+        return render(request, 'solicitudes/crear.html', {'formulario': SolicitudForm})
+    else:
+        try:
+            formulario = SolicitudForm(request.POST)
+            newForm = formulario.save(commit=False)
+            newForm.user = request.user
+            newForm.save()
+            return redirect('solicitudes')
+        except ValueError:
+            return render(request, 'solicitudes/crear.html', {'formulario': SolicitudForm, 'error': 'Ingresa datos validos'})
+            
+    
+def eliminarSolicitud(request, id):
+    solicitud = Solicitud.objects.get(id=id)
+    solicitud.delete()
+    return redirect('solicitudes')

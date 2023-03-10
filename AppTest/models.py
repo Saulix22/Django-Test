@@ -20,13 +20,15 @@ class Material(models.Model):
 class Solicitud(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=40, verbose_name='Titulo')
+    fecha = models.DateField(auto_now_add=True, verbose_name='Fecha de creación')
     detalles = models.TextField(max_length=100, verbose_name='Detalles')
     cantidad = models.IntegerField(default=0, verbose_name='Cantidad solicitada')
+    
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     id_material = models.ForeignKey(Material, on_delete=models.PROTECT)
     
     def __str__(self):
-        fila = "Solicitud: " + self.titulo + " - " + "Cantidad: " + self.cantidad
+        fila = "Solicitud: " + self.titulo + " - " + "Cantidad: " + str(self.cantidad)
         return fila
     
     def delete(self, using=None, keep_parents=False):

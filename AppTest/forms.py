@@ -1,7 +1,14 @@
 from django import forms
-from .models import Material
+from django.forms import ModelForm
+from .models import Material, Solicitud
 
 class MaterialForm(forms.ModelForm):
     class Meta:
         model = Material
         fields = '__all__'
+        
+class SolicitudForm(forms.ModelForm):
+    class Meta: 
+        model = Solicitud
+        fields= ['titulo', 'id_material', 'detalles', 'cantidad']
+        

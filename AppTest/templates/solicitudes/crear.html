@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block titulo %} Crear solicitud {% endblock %}
+
+{% block contenido %} 
+
+<div class="card m-4">
+    <div class="card-header">
+        Crear solicitud
+    </div>
+    <div class="card-body">
+        <h4 class="card-title">Datos</h4>
+        {{error}}
+        <form enctype="multipart/form-data"  method="POST">
+            {% csrf_token %}
+        <!-- {% include 'solicitudes/form.html' %} -->
+            {{ formulario }}
+            <input name="" id="" class="btn btn-success" type="submit" value="Añadir">
+            <a name="" id="" class="btn btn-danger" href="{% url 'solicitudes' %}" role="button">Cancelar</a>
+          
+          </form>
+    </div>
+</div>
+
+{% endblock %}
