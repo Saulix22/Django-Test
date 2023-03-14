@@ -9,6 +9,8 @@
 <a name="" id="" class="btn btn-primary mb-2" href="{% url 'crearSolicitud' %}" role="button">Crear solicitud</a>
 
 <div class="row">
+  
+  <h1>{{ group }}</h1>
     {% for solicitud in solicitudes %}
     <div class="col-md-4 my-2">
           <div class="card h-100">
@@ -18,8 +20,12 @@
               <p class="card-text">Detalles: {{ solicitud.detalles }}</p>
               <span>{{ solicitud.cantidad }}</span>
               <span>{{ solicitud.user }}</span>
-              <br>
-              <a href="{% url 'eliminarSolicitud' solicitud.id %}" class="btn btn-primary">Cerrar Solicitud</a>
+
+              {% if validation %}
+
+                <br>
+                <a href="{% url 'eliminarSolicitud' solicitud.id %}" class="btn btn-primary">Cerrar Solicitud</a>
+              {% endif %}
             </div>
           </div>
      </div>

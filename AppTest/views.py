@@ -6,8 +6,11 @@ from django.contrib.auth import login, logout, authenticate
 from .models import Material, Solicitud
 from .forms import MaterialForm, SolicitudForm
 from django.db import IntegrityError
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 
 # Create your views here.
+@login_required
 def inicio(request):
     return render(request, 'paginas/inicio.html')
 
@@ -32,7 +35,7 @@ def registro(request):
         return render(request, 'paginas/registro.html', {'form': UserCreationForm})
     else:
         if request.POST['password1'] == request.POST['password2']:
-            try: 
+            try:
                 user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
                 user.save
                 login(request, user)
@@ -55,37 +58,49 @@ def cerrarSesion(request):
 def base(request):
     return render(request, 'base.html')
 
+@login_required
+@permission_required("AppTest.view_material") 
 def materiales(request):
     materiales = Material.objects.all()
     return render(request, 'materiales/index.html', {'materiales': materiales})
 
+@login_required
 def crear(request):
     formulario = MaterialForm(request.POST or None, request.FILES or None)
-    print(formulario)
     if formulario.is_valid():
         formulario.save()
         return redirect('materiales')
     return render(request, 'materiales/crear.html', {'formulario': formulario})
 
+@login_required
 def editar(request, id):
-    material = Material.objects.get(id=id)
+    # material = Material.objects.get(id=id)
+    material = get_object_or_404(Material, id=id)
     formulario = MaterialForm(request.POST or None, request.FILES or None, instance=material)
     if formulario.is_valid() and  request.POST:
         formulario.save()
         return redirect('materiales')
     return render(request, 'materiales/editar.html', {'formulario': formulario})
 
+@login_required
 def eliminar(request, id):
     material = Material.objects.get(id=id)
     material.delete()
     return redirect('materiales')
 
+@login_required
 def solicitudes(request):
-    solicitudes = Solicitud.objects.all()
-    return render(request, 'solicitudes/inicio.html', {'solicitudes': solicitudes})
+    group = request.user.groups.all()[0]
+    if request.user.groups.filter(name='manager').exists():
+        validation = True
+    else: 
+        validation = False
 
+    solicitudes = Solicitud.objects.all()
+    return render(request, 'solicitudes/inicio.html', {'solicitudes': solicitudes, 'validation': validation, 'group': group})
+
+@login_required
 def crearSolicitud(request):
-    
     if request.method == 'GET':
         return render(request, 'solicitudes/crear.html', {'formulario': SolicitudForm})
     else:
@@ -99,6 +114,8 @@ def crearSolicitud(request):
             return render(request, 'solicitudes/crear.html', {'formulario': SolicitudForm, 'error': 'Ingresa datos validos'})
             
     
+@login_required
+@permission_required("AppTest.delete_solicitud")
 def eliminarSolicitud(request, id):
     solicitud = Solicitud.objects.get(id=id)
     solicitud.delete()
