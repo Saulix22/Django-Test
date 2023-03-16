@@ -51,12 +51,25 @@ def registro(request):
                 'error': 'Las contraseñas no coinciden'
             })
     
+def GroupValidation(request):
+    if request.user.groups.all():
+        #group = request.user.groups.all()[0]
+        if request.user.groups.filter(name='manager').exists():
+            validation = True
+        else: 
+            validation = False
+    else:
+        validation = False
+
+    return validation
+
 def cerrarSesion(request):
     logout(request)
     return redirect('inicio')
 
 def base(request):
-    return render(request, 'base.html')
+    validation = GroupValidation
+    return render(request, 'base.html', {'validation': validation})
 
 @login_required
 @permission_required("AppTest.view_material") 
@@ -90,14 +103,10 @@ def eliminar(request, id):
 
 @login_required
 def solicitudes(request):
-    group = request.user.groups.all()[0]
-    if request.user.groups.filter(name='manager').exists():
-        validation = True
-    else: 
-        validation = False
+    validation = GroupValidation
 
     solicitudes = Solicitud.objects.all()
-    return render(request, 'solicitudes/inicio.html', {'solicitudes': solicitudes, 'validation': validation, 'group': group})
+    return render(request, 'solicitudes/inicio.html', {'solicitudes': solicitudes, 'validation': validation})
 
 @login_required
 def crearSolicitud(request):

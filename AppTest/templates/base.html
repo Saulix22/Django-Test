@@ -20,7 +20,9 @@
       {% if user.is_authenticated %}
         <div class="nav navbar-nav">
             <a class="nav-item nav-link active" href="{% url 'inicio' %}" aria-current="page">Inicio <span class="visually-hidden">(current)</span></a>
-            <a class="nav-item nav-link" href="{% url 'solicitudes' %}">Solicitudes</a>
+            {% if validation %}
+              <a class="nav-item nav-link" href="{% url 'solicitudes' %}">Solicitudes</a>
+            {% endif %}
             <a class="nav-item nav-link" href="{% url 'materiales' %}">Material</a>
         </div>
         <div class="d-flex">
