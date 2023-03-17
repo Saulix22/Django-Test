@@ -20,12 +20,15 @@
               <span>{{ solicitud.user }}</span>
               <p>{{solicitud.user.group.username}}</p>
               <p>{{solicitud.id_material.nombre}}</p>
+              <span>area: {{ solicitud.id_material.area }}</span>
+              <span>cantidad: {{ solicitud.id_material.cantidad }}</span>
+              <img src="{{ solicitud.id_material.imagen.url }}" alt="" width="45">
               
               {% if validation %}
                 <br>
                 <a href="{% url 'eliminarSolicitud' solicitud.id %}" class="btn btn-primary">Cerrar Solicitud</a>
               {% endif %}
-              
+
             </div>
           </div>
      </div>
