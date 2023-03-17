@@ -10,9 +10,25 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 
 # Create your views here.
+def GroupValidation(request):
+    print ('Se está validando')
+    if request.user.groups.all():
+        #group = request.user.groups.all()[0]
+        #or request.user.is_superuser == False
+        #if request.user.groups.filter(name='manager').exists():
+        if request.user.groups.filter(name='manager').exists():
+            validation = True
+        else: 
+            validation = False
+    else:
+        validation = False
+
+    return validation
+
 @login_required
 def inicio(request):
-    return render(request, 'paginas/inicio.html')
+    validation = GroupValidation(request)
+    return render(request, 'paginas/inicio.html', {'validation': validation})
 
 def iniciarSesion(request):
     if request.method == 'GET':
@@ -50,40 +66,29 @@ def registro(request):
                 'form': UserCreationForm, 
                 'error': 'Las contraseñas no coinciden'
             })
-    
-def GroupValidation(request):
-    if request.user.groups.all():
-        #group = request.user.groups.all()[0]
-        if request.user.groups.filter(name='manager').exists():
-            validation = True
-        else: 
-            validation = False
-    else:
-        validation = False
-
-    return validation
 
 def cerrarSesion(request):
     logout(request)
     return redirect('inicio')
 
-def base(request):
-    validation = GroupValidation
-    return render(request, 'base.html', {'validation': validation})
+def base(request):    
+    return render(request, 'base.html')
 
 @login_required
 @permission_required("AppTest.view_material") 
 def materiales(request):
+    validation = GroupValidation(request)
     materiales = Material.objects.all()
-    return render(request, 'materiales/index.html', {'materiales': materiales})
+    return render(request, 'materiales/index.html', {'materiales': materiales, 'validation': validation})
 
 @login_required
 def crear(request):
+    validation = GroupValidation(request)
     formulario = MaterialForm(request.POST or None, request.FILES or None)
     if formulario.is_valid():
         formulario.save()
         return redirect('materiales')
-    return render(request, 'materiales/crear.html', {'formulario': formulario})
+    return render(request, 'materiales/crear.html', {'formulario': formulario, 'validation': validation})
 
 @login_required
 def editar(request, id):
@@ -103,15 +108,16 @@ def eliminar(request, id):
 
 @login_required
 def solicitudes(request):
-    validation = GroupValidation
-
+    validation = GroupValidation(request)
+    print(validation)
     solicitudes = Solicitud.objects.all()
     return render(request, 'solicitudes/inicio.html', {'solicitudes': solicitudes, 'validation': validation})
 
 @login_required
 def crearSolicitud(request):
+    validation = GroupValidation(request)
     if request.method == 'GET':
-        return render(request, 'solicitudes/crear.html', {'formulario': SolicitudForm})
+        return render(request, 'solicitudes/crear.html', {'formulario': SolicitudForm, 'validation': validation})
     else:
         try:
             formulario = SolicitudForm(request.POST)

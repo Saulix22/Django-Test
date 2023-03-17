@@ -18,12 +18,14 @@
               <p class="card-text">Detalles: {{ solicitud.detalles }}</p>
               <span>{{ solicitud.cantidad }}</span>
               <span>{{ solicitud.user }}</span>
-
+              <p>{{solicitud.user.group.username}}</p>
+              <p>{{solicitud.id_material.nombre}}</p>
+              
               {% if validation %}
-
                 <br>
                 <a href="{% url 'eliminarSolicitud' solicitud.id %}" class="btn btn-primary">Cerrar Solicitud</a>
               {% endif %}
+              
             </div>
           </div>
      </div>
