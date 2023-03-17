@@ -10,7 +10,8 @@ class Material(models.Model):
     cantidad = models.IntegerField(default=0, verbose_name='Cantidad')
 
     def __str__(self):
-        fila = "Nombre: " + self.nombre + " - " + "Área: " + self.area
+        #fila = "Nombre: " + self.nombre + " - " + "Área: " + self.area
+        fila = self.nombre 
         return fila 
     
     def delete(self, using=None, keep_parents=False):

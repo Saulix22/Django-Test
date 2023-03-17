@@ -10,5 +10,5 @@ class MaterialForm(forms.ModelForm):
 class SolicitudForm(forms.ModelForm):
     class Meta: 
         model = Solicitud
-        fields= ['titulo', 'id_material', 'detalles', 'cantidad']
+        fields= ['titulo', 'detalles', 'cantidad']
         

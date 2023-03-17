@@ -119,10 +119,22 @@ def crearSolicitud(request):
     if request.method == 'GET':
         return render(request, 'solicitudes/crear.html', {'formulario': SolicitudForm, 'validation': validation})
     else:
+        print(request.POST)
         try:
             formulario = SolicitudForm(request.POST)
             newForm = formulario.save(commit=False)
             newForm.user = request.user
+            print(newForm.user)
+            titulo = request.POST['titulo']
+            try:
+                materialObject = Material.objects.get(nombre = request.POST['titulo'])
+            except Material.DoesNotExist:
+                return render(request, 'solicitudes/crear.html', {'formulario': SolicitudForm, 'error': 'SKU ingresado no existe'})
+            IDmaterial = materialObject.id
+            newForm.id_material = materialObject
+            print('El id de ' + titulo + ' es ' + str(IDmaterial))
+            print(newForm.id_material)
+            
             newForm.save()
             return redirect('solicitudes')
         except ValueError:
